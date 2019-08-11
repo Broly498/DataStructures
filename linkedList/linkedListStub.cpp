@@ -9,13 +9,27 @@ int main()
 
 	for (size_t it = 0; it < MAX_ITEMS; ++it)
 	{
-		bool success = container.Insert(it);
+		bool success = container.InsertFront(it);
 
 		if (success)
-			std::cout << "Successfully Inserted: " << container.Peek() << std::endl;
+			std::cout << "Successfully Inserted: " << container.Front() << std::endl;
 		else
 			std::cout << "Insertion Failed: " << it << std::endl;
 	}
+
+	for (size_t it = 0; it < MAX_ITEMS; ++it)
+	{
+		bool success = container.InsertBack(it);
+
+		if (success)
+			std::cout << "Successfully Inserted: " << container.Back() << std::endl;
+		else
+			std::cout << "Insertion Failed: " << it << std::endl;
+	}
+
+	container.ForwardPrint();
+	
+	container.ReversePrint();
 
 	return 0;
 }
