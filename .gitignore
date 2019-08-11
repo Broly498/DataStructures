@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+
+# Visual Studio Directories
+[Dd]ebug/
+.vs/
+
+# Visual Studio Files
+*.user
