@@ -7,13 +7,16 @@
 #include <new>
 #include <iostream>
 
+namespace containers
+{
+
 template<typename T>
 struct Node
 {
 	Node() = delete;
-	Node(const T& data) : Data{data} {}
+	Node(const T& data) : Data{ data } {}
 
-	Node* Next{nullptr};
+	Node* Next{ nullptr };
 	T Data;
 };
 
@@ -24,12 +27,8 @@ public:
 	LinkedList() = default;
 	~LinkedList()
 	{
-		while (!IsEmpty())
-		{
-			auto nextNode = head_->Next;
-			delete head_;
-			head_ = nextNode;
-		}
+		Clear();
+		head_ = nullptr;
 	}
 
 	bool IsEmpty() const { return head_ == nullptr; }
@@ -85,6 +84,18 @@ public:
 		RecurseAndReversePrint(head_);
 	}
 
+	bool Clear()
+	{
+		bool success;
+
+		if (IsEmpty())
+			success = false;
+		else
+			success = RecurseAndErase(head_);
+
+		return success;
+	}
+
 protected:
 private:
 	bool RecurseAndInsert(Node<T>* currentNode, const T& data)
@@ -125,7 +136,7 @@ private:
 
 		return data;
 	}
-	
+
 	void RecurseAndForwardPrint(Node<T>* currentNode) const
 	{
 		std::cout << "Data:" << currentNode->Data << std::endl;
@@ -133,7 +144,7 @@ private:
 		if (currentNode->Next != nullptr)
 			RecurseAndForwardPrint(currentNode->Next);
 	}
-	
+
 	void RecurseAndReversePrint(Node<T>* currentNode) const
 	{
 		if (currentNode->Next != nullptr)
@@ -142,9 +153,27 @@ private:
 		std::cout << "Data:" << currentNode->Data << std::endl;
 	}
 
+	bool RecurseAndErase(Node<T>* currentNode)
+	{
+		bool success;
 
-	Node<T>* head_{nullptr};
-	size_t size_{0};
+		if (currentNode->Next != nullptr)
+		{
+			success = RecurseAndErase(currentNode->Next);
+		}
+		else
+		{
+			delete currentNode;
+			--size_;
+			success = true;
+		}
+
+		return success;
+	}
+
+	Node<T>* head_{ nullptr };
+	size_t size_{ 0 };
 };
+}
 
 #endif
