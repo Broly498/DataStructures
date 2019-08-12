@@ -158,15 +158,11 @@ private:
 		bool success;
 
 		if (currentNode->Next != nullptr)
-		{
 			success = RecurseAndErase(currentNode->Next);
-		}
-		else
-		{
-			delete currentNode;
-			--size_;
-			success = true;
-		}
+
+		delete currentNode;
+		--size_;
+		success = true;
 
 		return success;
 	}
