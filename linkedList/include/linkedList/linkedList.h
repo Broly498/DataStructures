@@ -9,12 +9,12 @@
 
 namespace containers
 {
-
 template<typename T>
 struct Node
 {
 	Node() = delete;
 	Node(const T& data) : Data{ data } {}
+	Node(const T&& data) : Data{ data } {}
 
 	Node* Next{ nullptr };
 	T Data;
@@ -25,10 +25,16 @@ class LinkedList
 {
 public:
 	LinkedList() = default;
+
+	LinkedList(const LinkedList& other) { RecurseAndCopy(other.head_); }
+
 	~LinkedList()
 	{
-		Clear();
-		head_ = nullptr;
+		if (!IsEmpty())
+		{
+			Clear();
+			head_ = nullptr;
+		}
 	}
 
 	bool IsEmpty() const { return head_ == nullptr; }
@@ -72,17 +78,9 @@ public:
 
 	const T Back() const { return RecurseAndRetreive(head_); }
 
-	void ForwardPrint() const
-	{
-		std::cout << "Linked List Contains the Following Elements in Forward Order:" << std::endl;
-		RecurseAndForwardPrint(head_);
-	}
+	void ForwardPrint() const { RecurseAndForwardPrint(head_); }
 
-	void ReversePrint() const
-	{
-		std::cout << "Linked List Contains the Following Elements in Reverse Order:" << std::endl;
-		RecurseAndReversePrint(head_);
-	}
+	void ReversePrint() const { RecurseAndReversePrint(head_); }
 
 	bool Clear()
 	{
@@ -92,6 +90,8 @@ public:
 			success = false;
 		else
 			success = RecurseAndErase(head_);
+
+		head_ = nullptr;
 
 		return success;
 	}
@@ -139,7 +139,7 @@ private:
 
 	void RecurseAndForwardPrint(Node<T>* currentNode) const
 	{
-		std::cout << "Data:" << currentNode->Data << std::endl;
+		std::cout << "Linked List Contains:" << currentNode->Data <<  std::endl;
 
 		if (currentNode->Next != nullptr)
 			RecurseAndForwardPrint(currentNode->Next);
@@ -150,7 +150,7 @@ private:
 		if (currentNode->Next != nullptr)
 			RecurseAndReversePrint(currentNode->Next);
 
-		std::cout << "Data:" << currentNode->Data << std::endl;
+		std::cout << "Linked List Contains:" << currentNode->Data << std::endl;
 	}
 
 	bool RecurseAndErase(Node<T>* currentNode)
@@ -158,13 +158,21 @@ private:
 		bool success;
 
 		if (currentNode->Next != nullptr)
-			success = RecurseAndErase(currentNode->Next);
+			RecurseAndErase(currentNode->Next);
 
 		delete currentNode;
 		--size_;
 		success = true;
 
 		return success;
+	}
+
+	void RecurseAndCopy(Node<T>* currentNode)
+	{
+		if (currentNode->Next != nullptr)
+			RecurseAndCopy(currentNode->Next);
+
+		InsertFront(currentNode->Data);
 	}
 
 	Node<T>* head_{ nullptr };
