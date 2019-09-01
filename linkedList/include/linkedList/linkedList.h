@@ -7,13 +7,16 @@
 #include <new>
 #include <iostream>
 
+namespace containers
+{
 template<typename T>
 struct Node
 {
 	Node() = delete;
-	Node(const T& data) : Data{data} {}
+	Node(const T& data) : Data{ data } {}
+	Node(const T&& data) : Data{ data } {}
 
-	Node* Next{nullptr};
+	Node* Next{ nullptr };
 	T Data;
 };
 
@@ -22,13 +25,15 @@ class LinkedList
 {
 public:
 	LinkedList() = default;
+
+	LinkedList(const LinkedList& other) { RecurseAndCopy(other.head_); }
+
 	~LinkedList()
 	{
-		while (!IsEmpty())
+		if (!IsEmpty())
 		{
-			auto nextNode = head_->Next;
-			delete head_;
-			head_ = nextNode;
+			Clear();
+			head_ = nullptr;
 		}
 	}
 
@@ -69,20 +74,66 @@ public:
 		return success;
 	}
 
-	const T Front() const { return head_->Data; }
+	T* Front() const
+	{
+		T* front{ nullptr };
 
-	const T Back() const { return RecurseAndRetreive(head_); }
+		if (!IsEmpty())
+			front = &head_->Data;
+
+		return front;
+	}
+
+	T* Back() const
+	{
+		T* back{ nullptr };
+
+		if (!IsEmpty())
+			back = RecurseAndRetreiveBack(head_);
+
+		return back;
+	}
 
 	void ForwardPrint() const
 	{
-		std::cout << "Linked List Contains the Following Elements in Forward Order:" << std::endl;
+		std::cout << "Front --> [";
 		RecurseAndForwardPrint(head_);
+		std::cout << "] <-- Back";
 	}
 
 	void ReversePrint() const
+    {
+        std::cout << "Front --> [";
+        RecurseAndReversePrint(head_);
+        std::cout << "] <-- Back";
+    }
+
+	bool Clear()
 	{
-		std::cout << "Linked List Contains the Following Elements in Reverse Order:" << std::endl;
-		RecurseAndReversePrint(head_);
+		bool success;
+
+		if (IsEmpty())
+			success = false;
+		else
+			success = RecurseAndErase(head_);
+
+		head_ = nullptr;
+
+		return success;
+	}
+
+	std::pair<std::unique_ptr<T[]>, size_t> GetArray() const
+	{
+		std::unique_ptr<T[]> arrayOut{ nullptr };
+		
+		if (!IsEmpty())
+		{
+			size_t arrayIndex = 0;
+			arrayOut = std::make_unique<T[]>(size_);
+            RecurseAndCreateArray(head_, arrayOut.get(), arrayIndex);
+        }
+
+		return std::make_pair(std::move(arrayOut), size_);
 	}
 
 protected:
@@ -114,37 +165,74 @@ private:
 		return success;
 	}
 
-	const T RecurseAndRetreive(Node<T>* currentNode) const
+	T* RecurseAndRetreiveBack(Node<T>* currentNode) const
 	{
-		T data;
+		T* back{nullptr};
 
 		if (currentNode->Next != nullptr)
-			data = RecurseAndRetreive(currentNode->Next);
+			back = RecurseAndRetreiveBack(currentNode->Next);
 		else
-			data = currentNode->Data;
+			back = &currentNode->Data;
 
-		return data;
+		return back;
 	}
-	
+
 	void RecurseAndForwardPrint(Node<T>* currentNode) const
 	{
-		std::cout << "Data:" << currentNode->Data << std::endl;
+		std::cout << currentNode->Data;
 
 		if (currentNode->Next != nullptr)
+		{
+			std::cout << ", ";
 			RecurseAndForwardPrint(currentNode->Next);
+		}
 	}
-	
+
 	void RecurseAndReversePrint(Node<T>* currentNode) const
 	{
-		if (currentNode->Next != nullptr)
-			RecurseAndReversePrint(currentNode->Next);
-
-		std::cout << "Data:" << currentNode->Data << std::endl;
+        if (currentNode)
+        {
+            RecurseAndReversePrint(currentNode->Next);
+            std::cout << currentNode->Data;
+            
+            if (currentNode != head_)
+                std::cout << ", ";
+        }
 	}
 
+	bool RecurseAndErase(Node<T>* currentNode)
+	{
+		bool success;
 
-	Node<T>* head_{nullptr};
-	size_t size_{0};
+		if (currentNode->Next != nullptr)
+			RecurseAndErase(currentNode->Next);
+
+		delete currentNode;
+		--size_;
+		success = true;
+
+		return success;
+	}
+
+	void RecurseAndCopy(Node<T>* currentNode)
+	{
+		if (currentNode->Next != nullptr)
+			RecurseAndCopy(currentNode->Next);
+
+		InsertFront(currentNode->Data);
+	}
+
+    void RecurseAndCreateArray(Node<T>* currentNode, T* arrayIn, size_t& indexIn) const
+    {
+        arrayIn[indexIn++] = currentNode->Data;
+
+        if (currentNode->Next)
+            RecurseAndCreateArray(currentNode->Next, arrayIn, indexIn);
+    }
+
+	Node<T>* head_{ nullptr };
+	size_t size_{ 0 };
 };
+}
 
 #endif
