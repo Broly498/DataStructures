@@ -19,12 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\linkedListStub.cpp" />
+    <ClCompile Include="src\doublyLinkedListStub.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\doublyLinkedList\doublyLinkedList.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{89B8D787-F5F5-446D-9724-E3FB69A1098B}</ProjectGuid>
-    <RootNamespace>Project1</RootNamespace>
+    <ProjectGuid>{D6D93013-31B3-4D58-850E-233E1D25E7E6}</ProjectGuid>
+    <RootNamespace>doublyLinkedList</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

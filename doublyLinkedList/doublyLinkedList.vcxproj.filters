@@ -2,12 +2,17 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="src">
-      <UniqueIdentifier>{cb8d9e0c-0f37-45c4-978e-613368e54410}</UniqueIdentifier>
+      <UniqueIdentifier>{0b018f31-95ba-4b63-918e-c4fe5a8d3be6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\linkedListStub.cpp">
+    <ClCompile Include="src\doublyLinkedListStub.cpp">
       <Filter>src</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\doublyLinkedList\doublyLinkedList.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
